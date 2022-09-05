@@ -29,7 +29,8 @@ const generateRoute = (rec, rut, key) => rut ? rec[rut][key] : rec[key];
 const normalizeStr = str => str.replace(/(\-|\040|\%20)/, '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
 const imageRoutes = (images, req) => {
-  const staticRoute = req.headers.host.split(':')[0] + '/rsimg/';
+  const staticRoute = (process.env.PROXY || req.headers.host.split(':')[0])
+    + '/img/';
 
   return images.map(f => {
     return f.startsWith(staticRoute) ?
@@ -135,7 +136,11 @@ exports.methodPaginate = (resources, {page, forPage}) => {
 exports.methodRoutes = (resources, req) => {
   for (let i = 0; i < resources.length; i++) {
     resources[i].photos = imageRoutes(resources[i].photos, req);
-    resources[i].url = 'https://' + req.headers.host + '/realestate/api/props/' + resources[i].id;
+    resources[i].url = `https://${
+      process.env.PROXY || req.headers.host + '/realestate/api'
+    }/props/${
+      resources[i].id
+    }`
   };
   
   return resources;

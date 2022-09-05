@@ -63,10 +63,10 @@ module.exports = http.createServer((req, res) => {
         pages: pages,
         previous: pagination.page <= 1
           ? ''
-          : 'https://' + req.headers.host + route + '?' + changePage(query, pages, pagination.page, false),
+          : 'https://' + (process.env.PROXY || req.headers.host) + route + '?' + changePage(query, pages, pagination.page, false),
         next: pagination.page >= pages
           ? ''
-          : 'https://' + req.headers.host + route + '?' + changePage(query, pages, pagination.page, true),
+          : 'https://' + (process.env.PROXY || req.headers.host) + route + '?' + changePage(query, pages, pagination.page, true),
         results: resultsRoutes
       });
     } else if (method === 'GET' && base === 'props' && cleanID) {
