@@ -17,9 +17,8 @@ const {
 
 module.exports = http.createServer((req, res) => {
   const {method, url} = req;
-  const [route, query] = separateParameters(url),
-    relativeRoute = route.replace('/realestate', '') || '/';
-  const [,, base, id, ext] = relativeRoute.split('/'),
+  const [route, query] = separateParameters(url)
+  const [, base, id, ext] = route.split('/'),
     cleanID = !isNaN(parseInt(id)) && parseInt(id).toString() === id && typeof ext === 'undefined';
 
   // Prepare response
@@ -34,8 +33,7 @@ module.exports = http.createServer((req, res) => {
   return new Promise(resolve => {
     const DB = require('./db.json');
 
-    if (method === 'GET' && relativeRoute === '/api/props') {
-      console.log('get all props')
+    if (method === 'GET' && route === '/props') {
       const parameters = getValues(query);
       const filters = generateFilters(parameters),
         sort = {prop: parameters.sortBy, direction: parameters.sortOrder !== 'desc'},
